@@ -27,16 +27,12 @@ const Tasks = (props) => {
     
     const getUser = async() => {
       const u = await auth.currentUser;
-      if(u){
-          setUser(u);
-      }
+      setUser(u);
     }
   
     React.useEffect(() => {
       getUser();
-      if(user!=null){
-        obtenerDatos();
-      }
+      obtenerDatos();
     },[])
   
     const agregarTarea = async(e) => {
