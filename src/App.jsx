@@ -1,7 +1,7 @@
-
 import './App.css';
 import React from 'react';
 import { nanoid } from 'nanoid';
+import {firebase} from './firebase'
 
 function App() {
 
@@ -11,45 +11,90 @@ function App() {
   const [id,setId] = React.useState('');
   const [error,setError] = React.useState(null);
 
-  const agregarTarea = (e) => {
+
+  const obtenerDatos = async () => {
+
+    try{
+
+      const db = firebase.firestore();
+      const data = await db.collection('tareas').get();
+      const arrayData = await data.docs.map(doc =>({id:doc.id,...doc.data()}))
+      setTareas(arrayData);
+    } catch(error){
+      console.log(error);
+    }
+  }
+
+  React.useEffect(() => {
+
+    obtenerDatos();
+
+  },[])
+
+  const agregarTarea = async(e) => {
     e.preventDefault();
     if(!tarea.trim()){
       setError('Escriba algo por favor...')
       return
     }
-
-    setTareas([...tareas,{id:nanoid(10),nombre:tarea}])
+    const db = firebase.firestore();
+    const nuevaTarea = {
+      name: tarea,
+      fecha: Date.now()
+    }
+    const data = await db.collection('tareas').add(nuevaTarea);
+    setTareas([...tareas,{...nuevaTarea,id:data.id}]);
 
     setTarea('');
     setError(null);
   }
 
-  const eliminarTarea = (id) => {
+  const eliminarTarea = async(id) => {
 
-    const arrayFiltrado = tareas.filter( item => item.id!==id);
-    setTareas(arrayFiltrado);
+    try{
+      const db = firebase.firestore();
+      await db.collection('tareas').doc(id).delete();
+
+      const arrayFiltrado = tareas.filter( item => item.id!==id);
+      setTareas(arrayFiltrado);
+
+    } catch(error){
+      console.log(error);
+    }
+
+
     
   }
 
   const editarTarea = (item) => {
     setModoEdicion(true);
-    setTarea(item.nombre);
+    setTarea(item.name);
     setId(item.id);
     setError(null);
   }
   
-  const editar = (e) => {
-    e.preventDefault();
-    if(!tarea.trim()){
-      setError('Escriba algo por favor...')
-      return
-    }
+  const editar = async(e) => {
+    try{
+      e.preventDefault();
+      if(!tarea.trim()){
+        setError('Escriba algo por favor...')
+        return
+      }
 
-    const arrayEditado = tareas.map(item => item.id === id ? {id:id,nombre:tarea} : item)
-    setTareas(arrayEditado)
-    setModoEdicion(false);
-    setTarea('');
-    setId('');
+      const db = firebase.firestore();
+      await db.collection('tareas').doc(id).update(
+        {
+          name:tarea
+        }
+      );
+      const arrayEditado = tareas.map(item => item.id === id ? {id:id,name:tarea} : item)
+      setTareas(arrayEditado)
+      setModoEdicion(false);
+      setTarea('');
+      setId('');
+    } catch(error){
+      console.log(error);
+    }
   }
   return (
     <div className="container mt-5">
@@ -64,7 +109,7 @@ function App() {
                 ? (<li className='list-group-item'>No hay tareas</li>)
                 : (tareas.map( (item) =>
                 <li className="list-group-item" key={item.id}>
-                  <span className="lead">{item.nombre}</span>
+                  <span className="lead">{item.name}</span>
                     <button className="btn btn-danger btn sm float-end mx-2" onClick={() => eliminarTarea(item.id)}>Eliminar</button>
                     <button className="btn btn-warning btn sm float-end mx-2" onClick={() => editarTarea(item)}>Editar</button>
                 </li>
