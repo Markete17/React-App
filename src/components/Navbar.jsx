@@ -7,6 +7,9 @@ import { withRouter } from 'react-router-dom'
 const Navbar = (props) => {
 
     const getAdmin = async() => {
+        if(props.user==null){
+            return false
+        }
         const uid = props.user.uid;
         const user = await db.collection('users').where('uid', '==',uid).where('isAdmin', '==',true).get()
         if(user==undefined){

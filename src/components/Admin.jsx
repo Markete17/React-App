@@ -1,26 +1,28 @@
 import React from 'react'
 import { auth } from '../firebase'
+import Login from './Login'
 import { withRouter } from 'react-router-dom'
 
 const Admin = (props) => {
 
     const [user,setUser] = React.useState(null);
 
-    React.useEffect(() => {
-        const u = auth.currentUser;
+    const getUser = async() => {
+        const u = await auth.currentUser;
         if(u){
             setUser(u);
-        } else {
-            props.history.push('/')
         }
+      }
+
+    React.useEffect(() => {
+        getUser();
       },[])
 
-  return (
+  return user!=null ? (
     <div>
-        <h2>Ruta protegida</h2>
-
+        <h2>Admin Page - USER: {user.email}</h2>
     </div>
-  )
+  ) : <Login></Login>
 }
 
 export default withRouter(Admin)

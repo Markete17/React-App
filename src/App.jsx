@@ -33,7 +33,7 @@ function App() {
                   <Admin></Admin>
               </Route>
               <Route path="/tasks">
-                  <Tasks></Tasks>
+                  <Tasks user={fireBaseUser}></Tasks>
               </Route>
               <Route path="/" exact>
                   <Login></Login>

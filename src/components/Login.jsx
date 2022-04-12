@@ -52,6 +52,7 @@ const Login = (props) => {
       }
 
       )
+      await db.collection(res.user.uid)
       setEmail('');
       setPassword('')
       setError(null)
@@ -127,8 +128,8 @@ const Login = (props) => {
               
               {
                 isRegister 
-                ? 'Not registered?'
-                : 'Already has Account?'
+                ? 'Already have Account?'
+                : 'Not registered?'
               }
                 </button>
 
