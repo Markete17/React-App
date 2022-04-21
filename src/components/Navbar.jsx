@@ -51,8 +51,11 @@ const Navbar = (props) => {
                 {
                     props.user!=null && <NavLink className="btn btn-primary mx-2" to="/" activeClassName="selected">Home</NavLink>
                 }
-                 {
+                {
                     props.user!=null && <NavLink className="btn btn-primary mx-2" to="/tasks" activeClassName="selected">My Tasks</NavLink>
+                }
+                {
+                    props.user!=null && <NavLink className="btn btn-primary mx-2" to="/pokemons" activeClassName="selected">Pokemons</NavLink>
                 }
                 {
                     (props.user!=null && isAdmin) && <NavLink className="btn btn-primary mx-2" to="/admin" activeClassName="selected">Admin</NavLink>
