@@ -1,18 +1,25 @@
 import React from 'react'
 import {auth, db} from '../firebase'
 import { withRouter } from 'react-router-dom/cjs/react-router-dom.min';
+import {useDispatch,useSelector} from 'react-redux'
+import {signInWithGoogleUserAction} from '../redux/userDucks'
+import Home from './Home';
 
 const Login = (props) => {
-
+  
   const [email,setEmail] = React.useState('');
   const [password,setPassword] = React.useState('');
   const [error,setError] = React.useState(null);
-  const [isRegister,setIsRegister] = React.useState(true);
+  const [isRegister,setIsRegister] = React.useState(false);
   const [user,setUser] = React.useState(null);
+
+  const dispatch = useDispatch()
+  const loading = useSelector(store =>store.user.loading)
+  const active = useSelector(store =>store.user.active)
 
   const processData = (e) => {
     e.preventDefault();
-    if(!email.trim()){
+    if(!email.trim()){ 
       setError('Enter your email')
       return;
     }
@@ -34,12 +41,12 @@ const Login = (props) => {
 
   React.useEffect(() => {
       const u = auth.currentUser;
-      if(u){
+      if(u || active){
           setUser(u);
       } else {
           setUser(null);
       }
-    },[])
+    },[active])
 
   const register = React.useCallback(async() => {
 
@@ -79,6 +86,10 @@ const Login = (props) => {
 
   )
 
+  const resetPassword = React.useCallback(async () =>{
+    props.history.push('/reset')
+  })
+
   return user === null ? (
     <div>
     <form onSubmit={processData}>
@@ -107,12 +118,12 @@ const Login = (props) => {
                 <label className="form-label">Email</label>
               </div>
 
-              <div className="form-outline form-white mb-4">
+              <div className="form-outline form-white mb-3">
                 <input onChange={e=>setPassword(e.target.value)} value={password} type="password" id="typePasswordX" placeholder='Enter your password' className="form-control form-control-lg" />
                 <label className="form-label">Password</label>
               </div>
-
-              <p className="small mb-5 pb-lg-2"><a className="text-white-50" href="#!">Forgot password?</a></p>
+                {!isRegister && <p className="small mb-4 pb-lg-2"><a className="text-white-50" href="" onClick={() =>resetPassword()}>Forgot password?</a></p>}
+              
               
               <button className="btn btn-outline-light btn-lg px-5 mx-2" type="submit">
                 
@@ -121,8 +132,13 @@ const Login = (props) => {
                 ? 'Register'
                 : 'Login'
               }
-                
-                </button>
+              </button>
+                {
+                  !isRegister && 
+                    <div className='mt-2'>
+                    <button onClick={() => dispatch(signInWithGoogleUserAction())} disabled={loading} type='button' className='btn btn-outline-light btn-lg px-5 mx-2'>Login With Google</button>
+                    </div>
+                }
                 <br></br>
               <button onClick={() =>setIsRegister(!isRegister)} className="btn btn-outline-light btn-sm px-5 mx-2 mt-4" type='button'>
               
@@ -142,7 +158,7 @@ const Login = (props) => {
 </section>
 </form>
     </div>
-  ) : <p className='text-center'><b>Your Email: </b>{user.email}</p>
+  ) : <Home></Home>
 }
 
 export default withRouter(Login)

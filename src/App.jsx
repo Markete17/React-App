@@ -6,25 +6,44 @@ import Tasks from './components/Tasks';
 import Admin from './components/Admin';
 import Reset from './components/Reset';
 import Pokemons from './components/Pokemons';
-import {Provider} from 'react-redux'
-import {BrowserRouter as Router,Switch,Route} from 'react-router-dom'
+import Home from './components/Home';
+
+import {BrowserRouter as Router,Switch,Route,Redirect} from 'react-router-dom'
 import {auth} from './firebase'
-import generateStore from './redux/store';
+
 
 function App() {
 
-  const store = generateStore()
+  
   const [fireBaseUser,setFireBaseUser] = React.useState(false);
 
   React.useEffect(() => {
-    auth.onAuthStateChanged(user => {
-      if(user){
-        setFireBaseUser(user);
-      } else {
-        setFireBaseUser(null);
-      }
-    })
+    
+    const fetchUser = () => {
+      auth.onAuthStateChanged(user => {
+        if(user){
+          setFireBaseUser(user);
+        } else {
+          setFireBaseUser(null);
+        }
+      })
+    }
+    fetchUser()
   },[])
+
+  //Rutas protegidas - errores de momento
+  const PrivateRoute = ({component,path,...rest}) => {
+    if(localStorage.getItem('user')){
+      const userStore = JSON.parse(localStorage.getItem('user'))
+      if(userStore.uid === fireBaseUser.uid){
+        return <Route component={component} path='path' {...rest}></Route>
+      } else {
+        return <Redirect to='/' {...rest}></Redirect>
+      }
+    } else {
+      return <Redirect to='/' {...rest}></Redirect>
+    }
+  }
 
   return fireBaseUser !== false ? (
 
@@ -33,20 +52,11 @@ function App() {
         <Navbar user={fireBaseUser}></Navbar>
         <div className='container'>
           <Switch>
-              <Route path="/admin">
-                  <Admin></Admin>
-              </Route>
-              <Route path="/tasks">
-                  <Tasks user={fireBaseUser}></Tasks>
-              </Route>
-              <Route path="/reset">
-                  <Reset user={fireBaseUser}></Reset>
-              </Route>
-              <Route path="/pokemons">
-              <Provider store={store}>
-                <Pokemons user={fireBaseUser}></Pokemons>
-              </Provider>
-              </Route>
+              <Route path="/admin" component={Admin}/> {/*Tambien se puede poner asi*/}
+              <Route path="/tasks" user={fireBaseUser} component={Tasks}/>
+              <Route path="/reset" user={fireBaseUser} component={Reset}/>
+              <Route path="/home" user={fireBaseUser} component={Home}/>
+              <Route path="/pokemons" user={fireBaseUser} component={Pokemons}/>
               <Route path="/" exact>
                   <Login></Login>
               </Route>
@@ -57,7 +67,13 @@ function App() {
       
 
     </div>
-  ) : <p>Cargando</p>
+  ) : <div className="d-flex justify-content-center">
+        <div className="spinner-border" role="status">
+          <span className="sr-only">.</span>
+        </div>
+        <br></br>
+        <p>Loading</p>
+    </div>
 }
 
 export default App;

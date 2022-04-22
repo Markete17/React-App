@@ -1,10 +1,14 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
 import { Link } from 'react-router-dom'
-import { db,auth } from '../firebase'
+import { db} from '../firebase'
 import { withRouter } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import {logOutWithGoogle} from '../redux/userDucks'
 
 const Navbar = (props) => {
+
+    const dispatch = useDispatch()
 
     const getAdmin = async() => {
         if(props.user==null){
@@ -12,12 +16,12 @@ const Navbar = (props) => {
         }
         const uid = props.user.uid;
         const user = await db.collection('users').where('uid', '==',uid).where('isAdmin', '==',true).get()
-        if(user==undefined){
+        if(user===undefined){
             setIsAdmin(false)
             return false
         }
         const userData = user.docs;
-        if(userData==undefined || userData.length==0){
+        if(userData===undefined || userData.length===0){
             setIsAdmin(false)
             return false
         }
@@ -31,11 +35,9 @@ const Navbar = (props) => {
     const [isAdmin,setIsAdmin] = React.useState(false)
 
     const logout = () => {
-            auth.signOut().
-            then(()=>{
-                props.history.push('/')
-                window.reaload();
-            })
+            dispatch(logOutWithGoogle())
+            props.history.push('/')
+            window.reaload()
     }
 
     React.useEffect(() => {

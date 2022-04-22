@@ -3,7 +3,7 @@ import {db} from '../firebase';
 import { auth } from '../firebase';
 import Login from './Login';
 import { withRouter } from 'react-router-dom/cjs/react-router-dom.min';
-
+import moment from 'moment';
 
 const Tasks = (props) => {
     const [tarea,setTarea] = React.useState('');
@@ -12,14 +12,33 @@ const Tasks = (props) => {
     const [id,setId] = React.useState('');
     const [error,setError] = React.useState(null);
     const [user,setUser] = React.useState(null);
+    const [last,setLast] = React.useState()
+    const [isDesactive,setIsDesactive] = React.useState()
   
   
     const obtenerDatos = async () => {
   
       try{
-        const data = await db.collection(props.user.uid).get();
+        setIsDesactive(true)
+        const data = await db.collection(props.user.uid)
+          .limit(5)
+          .orderBy('date','desc')
+          .get();
         const arrayData = await data.docs.map(doc =>({id:doc.id,...doc.data()}))
+        setLast(data.docs[data.docs.length-1])
         setTareas(arrayData);
+
+        const query = await db.collection(props.user.uid)
+        .limit(5)
+        .orderBy('date','desc')
+        .startAfter(data.docs[data.docs.length-1])
+        .get();
+  
+        if(query.empty){
+          setIsDesactive(true)
+        } else {
+          setIsDesactive(false)
+        }
       } catch(error){
         console.log(error);
       }
@@ -43,7 +62,7 @@ const Tasks = (props) => {
       }
       const nuevaTarea = {
         name: tarea,
-        fecha: Date.now()
+        date: Date.now()
       }
       const data = await db.collection(props.user.uid).add(nuevaTarea);
       setTareas([...tareas,{...nuevaTarea,id:data.id}]);
@@ -94,6 +113,36 @@ const Tasks = (props) => {
         console.log(error);
       }
     }
+
+    const next = async(e) => {
+      try {
+        const data = await db.collection(props.user.uid)
+          .limit(5)
+          .orderBy('date','desc')
+          .startAfter(last)
+          .get();
+      const arrayData = await data.docs.map(doc =>({id:doc.id,...doc.data()}))
+      setTareas([...tareas,arrayData]);
+      setLast(data.docs[data.docs.length-1])
+
+      const query = await db.collection(props.user.uid)
+      .limit(5)
+      .orderBy('date','desc')
+      .startAfter(data.docs[data.docs.length-1])
+      .get();
+
+      if(query.empty){
+        setIsDesactive(true)
+      } else {
+        setIsDesactive(false)
+      }
+
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+
     return user!=null ?(
       <div className="container mt-3">
           <h1 className='text-center'>MY TASKS</h1>
@@ -105,16 +154,20 @@ const Tasks = (props) => {
                 { 
                   tareas.length === 0 
                   ? (<li className='list-group-item'>No tasks found</li>)
-                  : (tareas.map( (item) =>
+                  : (tareas.map( (item,index) =>
                   <li className="list-group-item" key={item.id}>
-                    <span className="lead">{item.name}</span>
-                      <button className="btn btn-danger btn sm float-end mx-2" onClick={() => eliminarTarea(item.id)}>Eliminar</button>
-                      <button className="btn btn-warning btn sm float-end mx-2" onClick={() => editarTarea(item)}>Editar</button>
+                    <span className="lead">{index+1} - {item.name} {moment(item.date).format('LLL')}</span>
+                      <button className="btn btn-danger btn-sm float-end mx-1" onClick={() => eliminarTarea(item.id)}>Eliminar</button>
+                      <button className="btn btn-warning btn-sm float-end mx-1" onClick={() => editarTarea(item)}>Editar</button>
                   </li>
                 ))
                 }
               </ul>
-  
+                <button 
+                className="btn btn-info btn-block mt-2 btn-sm"
+                onClick={() =>next()}
+                disabled={isDesactive ? false : true}
+                >Next</button>
             </div>
               
             <div className='col-4'>

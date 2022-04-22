@@ -25,11 +25,21 @@ const Pokemons = () => {
       },[])
 
   return user != null ? (
-    <div className='row mt-3'>
+    <div className='row mt-5'>
         <div className='col-md-6'>
             <h3 className='d-flex justify-content-center'>Pokemons List</h3>
-            <br></br>
-            <div className='d-flex justify-content-between'>
+            
+            <ul className='list-group mt-4'>
+                {
+                    pokemons.map(item => (
+                    <li className='list-group-item text-uppercase' key={item.name}>{item.name}
+                        <button className='btn btn-dark btn-sm float-end' onClick={() =>dispatch(getPokeDetailAction(item.url))}>Info</button>
+                    </li>))
+                }
+            </ul>
+            
+            
+            <div className='d-flex justify-content-between mt-4 mb-4'>
                 {
                     pokemons.length === 0 && <button className='btn btn-primary d-flex justify-content-center' onClick={() => dispatch(getPokemonsAction())}>Get Pokemons</button>
                 }
@@ -44,14 +54,7 @@ const Pokemons = () => {
             </div>
 
 
-            <ul className='list-group mt-3'>
-                {
-                    pokemons.map(item => (
-                    <li className='list-group-item text-uppercase' key={item.name}>{item.name}
-                        <button className='btn btn-dark btn-sm float-end' onClick={() =>dispatch(getPokeDetailAction(item.url))}>Info</button>
-                    </li>))
-                }
-            </ul>
+
             
         </div>
         <div className='col-md-6'>
