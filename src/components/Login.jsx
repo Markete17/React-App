@@ -2,16 +2,17 @@ import React from 'react'
 import {auth, db} from '../firebase'
 import { withRouter } from 'react-router-dom/cjs/react-router-dom.min';
 import {useDispatch,useSelector} from 'react-redux'
-import {signInWithGoogleUserAction} from '../redux/userDucks'
+import {signInAction, signInWithGoogleUserAction} from '../redux/userDucks'
 import Home from './Home';
 
 const Login = (props) => {
   
   const [email,setEmail] = React.useState('');
+  const [displayName,setDisplayName] = React.useState('');
+  const user = useSelector(store => store.user.user)
   const [password,setPassword] = React.useState('');
   const [error,setError] = React.useState(null);
   const [isRegister,setIsRegister] = React.useState(false);
-  const [user,setUser] = React.useState(null);
 
   const dispatch = useDispatch()
   const loading = useSelector(store =>store.user.loading)
@@ -19,6 +20,12 @@ const Login = (props) => {
 
   const processData = (e) => {
     e.preventDefault();
+
+    if(!displayName.trim() && isRegister){ 
+      setError('Enter your name')
+      return;
+    }
+
     if(!email.trim()){ 
       setError('Enter your email')
       return;
@@ -39,45 +46,41 @@ const Login = (props) => {
     }
   }
 
-  React.useEffect(() => {
-      const u = auth.currentUser;
-      if(u || active){
-          setUser(u);
-      } else {
-          setUser(null);
-      }
-    },[active])
-
   const register = React.useCallback(async() => {
 
     try {
       const res = await auth.createUserWithEmailAndPassword(email,password)
-      await db.collection('users').doc(res.user.uid).set({
+      const u = {
         email: res.user.email,
         uid:res.user.uid,
-        isAdmin:false
+        isAdmin:false,
+        displayName: displayName,
+        photoURL: 'https://ceslava.s3-accelerate.amazonaws.com/2016/04/mistery-man-gravatar-wordpress-avatar-persona-misteriosa-510x510.png'
       }
-
-      )
+      await db.collection('users').doc(res.user.uid).set(u)
+      dispatch(signInAction(u))
       await db.collection(res.user.uid)
       setEmail('');
       setPassword('')
       setError(null)
-      props.history.push('/tasks');
+      setDisplayName('');
+      props.history.push('/');
     } catch (error) {
       setError(error.message)
       setPassword('')
     }
 
-  },[email,password])
+  },[email,password,displayName])
 
   const login = React.useCallback( async() =>{
     try {
-      const res = await auth.signInWithEmailAndPassword(email,password)
+      await auth.signInWithEmailAndPassword(email,password)
+      const userDB = await db.collection('users').doc(auth.currentUser.uid).get()
+      dispatch(signInAction(userDB.data()))
       setEmail('');
       setPassword('')
       setError(null)
-      props.history.push('/tasks');
+      props.history.push('/');
     } catch (error) {
       setError(error.message)
       setPassword('')
@@ -90,7 +93,7 @@ const Login = (props) => {
     props.history.push('/reset')
   })
 
-  return user === null ? (
+  return user === null || user===undefined ? (
     <div>
     <form onSubmit={processData}>
     <section className="vh-50 gradient-custom">
@@ -113,6 +116,15 @@ const Login = (props) => {
                 )
 
               }
+              {isRegister &&
+              
+              <div className="form-outline form-white mb-1">
+                <input onChange={e=>setDisplayName(e.target.value)} value={displayName} type="text" id="typeDisplayName" placeholder='Enter your name' className="form-control form-control-lg" />
+                <label className="form-label">Name</label>
+              </div>
+
+              }
+
               <div className="form-outline form-white mb-1">
                 <input onChange={e=>setEmail(e.target.value)} value={email} type="email" id="typeEmailX" placeholder='Enter your email' className="form-control form-control-lg" />
                 <label className="form-label">Email</label>

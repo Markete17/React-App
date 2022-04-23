@@ -4,6 +4,7 @@ import { auth } from '../firebase';
 import Login from './Login';
 import { withRouter } from 'react-router-dom/cjs/react-router-dom.min';
 import moment from 'moment';
+import { useSelector,useDispatch } from 'react-redux'
 
 const Tasks = (props) => {
     const [tarea,setTarea] = React.useState('');
@@ -11,16 +12,16 @@ const Tasks = (props) => {
     const [modoEdicion,setModoEdicion] = React.useState(false);
     const [id,setId] = React.useState('');
     const [error,setError] = React.useState(null);
-    const [user,setUser] = React.useState(null);
     const [last,setLast] = React.useState()
     const [isDesactive,setIsDesactive] = React.useState()
+    const user = useSelector(store => store.user.user)
   
   
     const obtenerDatos = async () => {
   
       try{
         setIsDesactive(true)
-        const data = await db.collection(props.user.uid)
+        const data = await db.collection(user.uid)
           .limit(5)
           .orderBy('date','desc')
           .get();
@@ -43,14 +44,8 @@ const Tasks = (props) => {
         console.log(error);
       }
     }
-    
-    const getUser = async() => {
-      const u = await auth.currentUser;
-      setUser(u);
-    }
   
     React.useEffect(() => {
-      getUser();
       obtenerDatos();
     },[])
   
@@ -64,7 +59,7 @@ const Tasks = (props) => {
         name: tarea,
         date: Date.now()
       }
-      const data = await db.collection(props.user.uid).add(nuevaTarea);
+      const data = await db.collection(user.uid).add(nuevaTarea);
       setTareas([...tareas,{...nuevaTarea,id:data.id}]);
   
       setTarea('');
@@ -74,7 +69,7 @@ const Tasks = (props) => {
     const eliminarTarea = async(id) => {
   
       try{
-        await db.collection(props.user.uid).doc(id).delete();
+        await db.collection(user.uid).doc(id).delete();
   
         const arrayFiltrado = tareas.filter( item => item.id!==id);
         setTareas(arrayFiltrado);
@@ -99,7 +94,7 @@ const Tasks = (props) => {
           return
         }
           
-        await db.collection(props.user.uid).doc(id).update(
+        await db.collection(user.uid).doc(id).update(
           {
             name:tarea
           }

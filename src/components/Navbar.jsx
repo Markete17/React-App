@@ -50,12 +50,15 @@ const Navbar = (props) => {
         <Link className='navbar-brand mx-3 h1 text-white' to="/">React App</Link>
         <div>
             <div className='d-flex'>
+
                 {
                     props.user!=null && <NavLink className="btn btn-primary mx-2" to="/" activeClassName="selected">Home</NavLink>
                 }
+
                 {
                     props.user!=null && <NavLink className="btn btn-primary mx-2" to="/tasks" activeClassName="selected">My Tasks</NavLink>
                 }
+
                 {
                     props.user!=null && <NavLink className="btn btn-primary mx-2" to="/pokemons" activeClassName="selected">Pokemons</NavLink>
                 }
