@@ -1,11 +1,12 @@
 import {StrictMode} from 'react';
 import {createRoot} from 'react-dom/client';
-
 import App from './App';
 
 import { Provider } from 'react-redux';
-
 import generateStore from './redux/store';
+
+import ThemeProvider from './context/ThemeProvider';
+import ChatProvider from './context/ChatProvider';
 
 // 👇️ IMPORTANT: use correct ID of your root element
 // this is the ID of the div in your index.html file
@@ -20,7 +21,11 @@ const store = generateStore()
 root.render(
   <StrictMode>
     <Provider store={store}> {/*Provider para usar REDUX en los componentes, tiene que rodear toda la App*/}
-      <App />
+    <ChatProvider>
+      <ThemeProvider>
+        <App />
+      </ThemeProvider>
+      </ChatProvider>
     </Provider>
     </StrictMode>,
 );

@@ -6,6 +6,7 @@ import Tasks from './components/Tasks';
 import Admin from './components/Admin';
 import Reset from './components/Reset';
 import Pokemons from './components/Pokemons';
+import Chat from './components/Chat';
 import Home from './components/Home';
 
 import {BrowserRouter as Router,Switch,Route,Redirect} from 'react-router-dom'
@@ -48,15 +49,28 @@ function App() {
   return fireBaseUser !== false ? (
 
     <div className="container mt-5">
+      
       <Router forceRefresh>
-        <Navbar user={fireBaseUser}></Navbar>
+          <Navbar user={fireBaseUser}></Navbar>
+        
         <div className='container'>
           <Switch>
-              <Route path="/admin" component={Admin}/> {/*Tambien se puede poner asi*/}
+              <Route path="/admin">
+              
+                <Admin></Admin>
+              </Route> 
+              {/*Tambien se puede poner asi
+              <Route path="/tasks" user={fireBaseUser} component={Tasks}/>
+              */}
               <Route path="/tasks" user={fireBaseUser} component={Tasks}/>
               <Route path="/reset" user={fireBaseUser} component={Reset}/>
-              <Route path="/home" user={fireBaseUser} component={Home}/>
+              {/*Se puede pasar el user por los props o por REDUX como en HOME y demas*/}
+              <Route path="/home">
+                  <Home></Home>
+                  
+              </Route>
               <Route path="/pokemons" user={fireBaseUser} component={Pokemons}/>
+              <Route path="/chat" user={fireBaseUser} component={Chat}/>
               <Route path="/" exact>
                   <Login></Login>
               </Route>

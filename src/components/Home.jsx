@@ -1,18 +1,19 @@
 import React from 'react'
 import Login from './Login'
-import {auth, db} from '../firebase'
 import { useSelector,useDispatch } from 'react-redux'
 import {updateUserAction,updatePhotoUserAction} from '../redux/userDucks'
+import { ThemeContext } from '../context/ThemeProvider'
 
-const Home = () => {
-
+const Home = (props) => {
+    
     const dispatch = useDispatch()
     const user = useSelector(store => store.user.user)
     const loading = useSelector(store => store.user.loading)
     const [username,setUserName] = React.useState(user.displayName)
     const [activateForm,setActivateForm] = React.useState(false)
     const [error,setError] = React.useState(false)
-    
+
+    const {theme} = React.useContext(ThemeContext)
     const activate = () => {
         setActivateForm(!activateForm)
     }
@@ -43,7 +44,12 @@ const Home = () => {
   return user != null ?(
     <div className='mt-5 text-center'>
         <div className='card'>
-          <div className='card-body'>
+          <div style={
+      {background: theme.background,
+        color:theme.color
+      }
+      
+      }className='card-body'>
             <img src={user.photoURL} alt='Profile Image' width='100px' className='img-fluid'></img>
             <h5 className='card-title mt-3'>Name: {user.displayName}</h5>
             <p className='card-text'>Email: {user.email}</p>
@@ -59,9 +65,10 @@ const Home = () => {
                 id='inputGroupFile01'
                 style={{display:'none'}}
                 onChange={e => selectFile(e)}
+                disabled={loading}
                 />
               <label 
-                className='btn btn-primary mt-2' 
+                className={loading ? 'btn btn-primary mt-2 disabled' : 'btn btn-primary mt-2'} 
                 htmlFor='inputGroupFile01'>
                   Edit photo
               </label>

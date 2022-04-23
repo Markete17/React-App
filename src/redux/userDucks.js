@@ -43,7 +43,8 @@ export const signInWithGoogleUserAction = (props) => async(dispatch) => {
                 uid: res.user.uid,
                 email: res.user.email,
                 displayName: res.user.displayName,
-                photoURL: res.user.photoURL
+                photoURL: res.user.photoURL,
+                isAdmin: false
             }
             const userDB = await db.collection('users').doc(user.uid).get()
             if(userDB.exists){

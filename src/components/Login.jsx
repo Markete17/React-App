@@ -5,7 +5,9 @@ import {useDispatch,useSelector} from 'react-redux'
 import {signInAction, signInWithGoogleUserAction} from '../redux/userDucks'
 import Home from './Home';
 
+
 const Login = (props) => {
+  
   
   const [email,setEmail] = React.useState('');
   const [displayName,setDisplayName] = React.useState('');
@@ -17,7 +19,6 @@ const Login = (props) => {
   const dispatch = useDispatch()
   const loading = useSelector(store =>store.user.loading)
   const active = useSelector(store =>store.user.active)
-
   const processData = (e) => {
     e.preventDefault();
 
@@ -93,7 +94,7 @@ const Login = (props) => {
     props.history.push('/reset')
   })
 
-  return user === null || user===undefined ? (
+  return (user === null || user===undefined) ? (
     <div>
     <form onSubmit={processData}>
     <section className="vh-50 gradient-custom">
