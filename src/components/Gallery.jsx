@@ -1,6 +1,7 @@
 import { useFetch } from '../hooks/useFetch'
 import Loading from './Loading'
 import { Link,useSearchParams } from 'react-router-dom'
+import SearchIcon from '@mui/icons-material/Search';
 
 const Gallery = () => {
 
@@ -29,9 +30,11 @@ const Gallery = () => {
     <div>
         <h1 className='text-center mt-4'>Gallery</h1>
         
+        <SearchIcon></SearchIcon>
         <input 
             type='text' 
             className='form-control mb-2'
+            placeholder='Search the photo'
             value={searchParams.get('filter') || ""}
             onChange={change} />
         

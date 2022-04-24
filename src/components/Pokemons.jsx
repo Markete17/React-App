@@ -4,6 +4,11 @@ import {getPokeDetailAction, getPokemonsAction,nextPokemonsAction,previousPokemo
 import {auth} from '../firebase'
 import Login from './Login'
 import PokeDetail from './PokeDetail'
+import GetAppIcon from '@mui/icons-material/GetApp';
+import { Button } from '@mui/material'
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import InfoIcon from '@mui/icons-material/Info';
 
 const Pokemons = () => {
     const dispatch = useDispatch();
@@ -33,7 +38,7 @@ const Pokemons = () => {
                 {
                     pokemons.map(item => (
                     <li className='list-group-item text-uppercase' key={item.name}>{item.name}
-                        <button className='btn btn-dark btn-sm float-end' onClick={() =>dispatch(getPokeDetailAction(item.url))}>Info</button>
+                        <Button color='info' size='small' variant='contained' startIcon={<InfoIcon/>}  className='float-end' onClick={() =>dispatch(getPokeDetailAction(item.url))}>Info</Button>
                     </li>))
                 }
             </ul>
@@ -41,15 +46,15 @@ const Pokemons = () => {
             
             <div className='d-flex justify-content-between mt-4 mb-4'>
                 {
-                    pokemons.length === 0 && <button className='btn btn-primary d-flex justify-content-center' onClick={() => dispatch(getPokemonsAction())}>Get Pokemons</button>
+                    pokemons.length === 0 && <Button color='primary' variant='contained' startIcon={<GetAppIcon/>} className='btn btn-primary d-flex justify-content-center' onClick={() => dispatch(getPokemonsAction())}>Get Pokemons</Button>
                 }
 
                 {
-                    next && <button className='btn btn-primary' onClick={() => dispatch(nextPokemonsAction())}>Next Pokemons</button>
+                    next && <Button color='primary' variant='contained' startIcon={<NavigateNextIcon/>} onClick={() => dispatch(nextPokemonsAction())}>Next</Button>
                 }
 
                 {
-                    previous && <button className='btn btn-primary' onClick={() => dispatch(previousPokemonsAction())}>Previous Pokemons</button>
+                    previous && <Button color='primary' variant='contained' startIcon={<NavigateBeforeIcon/>} onClick={() => dispatch(previousPokemonsAction())}>Previous</Button>
                 }
             </div>
 

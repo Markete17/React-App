@@ -5,6 +5,14 @@ import { db} from '../firebase'
 import { useDispatch } from 'react-redux'
 import {logOutWithGoogle} from '../redux/userDucks'
 import {useNavigate } from "react-router-dom";
+import HomeIcon from '@mui/icons-material/Home';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import CatchingPokemonIcon from '@mui/icons-material/CatchingPokemon';
+import ForumIcon from '@mui/icons-material/Forum';
+import CollectionsIcon from '@mui/icons-material/Collections';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import LoginIcon from '@mui/icons-material/Login';
 
 const Navbar = (props) => {
 
@@ -25,7 +33,9 @@ const Navbar = (props) => {
         }
         
         const userData = user.docs;
+        
         if(userData===undefined || userData.length===0){
+            
             setIsAdmin(false)
             return false
         }
@@ -62,36 +72,37 @@ const Navbar = (props) => {
             <ul className="dropdown-menu">
                 <li className='dropdown-item text-center mt-1'>
                     {
-                        props.user!=null && <NavLink className="text-decoration-none font-weight-bold" to="/">Home</NavLink>
+                        props.user!=null && 
+                            <NavLink className="text-decoration-none font-weight-bold" to="/"><HomeIcon></HomeIcon> Home</NavLink>
                     }
                 </li>
                 <li className='dropdown-item text-center mt-1'>
                     {
-                        props.user!=null && <NavLink className="text-decoration-none font-weight-bold" to="/tasks">My Tasks</NavLink>
+                        props.user!=null && <NavLink className="text-decoration-none font-weight-bold" to="/tasks"><AssignmentIcon></AssignmentIcon> My Tasks</NavLink>
                     }
                 </li>
 
                 <li className='dropdown-item text-center mt-1'>
                 {
-                        props.user!=null && <NavLink className="text-decoration-none font-weight-bold" to="/pokemons">Pokemons</NavLink>
+                        props.user!=null && <NavLink className="text-decoration-none font-weight-bold" to="/pokemons"><CatchingPokemonIcon></CatchingPokemonIcon> Pokemons</NavLink>
                     }
                 </li>
                 <li className='dropdown-item text-center mt-1'>
                     {
-                        props.user!=null && <NavLink className="text-decoration-none font-weight-bold" to="/chat">Chat</NavLink>
+                        props.user!=null && <NavLink className="text-decoration-none font-weight-bold" to="/chat"><ForumIcon></ForumIcon> Chat</NavLink>
                     }
                 </li>
 
                 <li className='dropdown-item text-center mt-1'>
                     {
-                        props.user!=null && <NavLink className="text-decoration-none font-weight-bold" to="/gallery">Gallery</NavLink>
+                        props.user!=null && <NavLink className="text-decoration-none font-weight-bold" to="/gallery"><CollectionsIcon></CollectionsIcon> Gallery</NavLink>
                     }
                 </li>
                 
                 {isAdmin && <hr className="dropdown-divider"/>}
                 <li className='dropdown-item text-center mt-1'>
                     {
-                        (props.user!=null && isAdmin) && <NavLink className="text-decoration-none font-weight-bold" to="/admin">Admin</NavLink>
+                        (props.user!=null && isAdmin) && <NavLink className="text-decoration-none font-weight-bold" to="/admin"><AdminPanelSettingsIcon></AdminPanelSettingsIcon> Admin</NavLink>
                     }
                 </li>
                 
@@ -101,8 +112,8 @@ const Navbar = (props) => {
             }
                 {
                     props.user!=null 
-                    ? <button onClick={() => logout()} className='btn btn-primary mx-2'>Log Out</button>
-                    : <NavLink className="btn btn-primary mx-2 pe-auto" to="/">Log In</NavLink>
+                    ? <button onClick={() => logout()} className='btn btn-primary mx-2'><ExitToAppIcon></ExitToAppIcon> Log Out</button>
+                    : <NavLink className="btn btn-primary mx-2 pe-auto" to="/"><LoginIcon></LoginIcon> Log In</NavLink>
                 }
             </div>
         </div>

@@ -14,6 +14,8 @@ Web: https://react-app-d34e5.web.app/
 - npm i redux-thunk
 - npm i axios
 - npm i react-router-dom@6
+- npm install @mui/material @emotion/react @emotion/styled
+- npm install @mui/icons-material
 
 # Documentation
 - https://bluuweb.github.io/react-udemy/

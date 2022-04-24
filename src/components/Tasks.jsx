@@ -3,6 +3,10 @@ import {db} from '../firebase';
 import Login from './Login';
 import moment from 'moment';
 import { useSelector,useDispatch } from 'react-redux'
+import { Button } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const Tasks = (props) => {
     const [tarea,setTarea] = React.useState('');
@@ -150,17 +154,18 @@ const Tasks = (props) => {
                   : (tareas.map( (item,index) =>
                   <li className="list-group-item" key={item.id}>
                     <span className="lead">{index+1} - {item.name} {moment(item.date).format('LLL')}</span>
-                      <button className="btn btn-danger btn-sm float-end mx-1" onClick={() => eliminarTarea(item.id)}>Eliminar</button>
-                      <button className="btn btn-warning btn-sm float-end mx-1" onClick={() => editarTarea(item)}>Editar</button>
+                      <Button color='error' variant='contained' size='small' startIcon={<DeleteIcon/>} className="float-end mx-1" onClick={() => eliminarTarea(item.id)}>Eliminar</Button>
+                      <Button color='warning' variant='contained' size='small' startIcon={<EditIcon/>} className="float-end mx-1" onClick={() => editarTarea(item)}>Editar</Button>
                   </li>
                 ))
                 }
               </ul>
-                <button 
-                className="btn btn-info btn-block mt-2 btn-sm"
+                <Button color='info'
+                variant='contained'
+                className="btn-block mt-2 btn-sm"
                 onClick={() =>next()}
                 disabled={isDesactive ? false : true}
-                >Next</button>
+                >Next</Button>
             </div>
               
             <div className='col-4'>
@@ -181,8 +186,8 @@ const Tasks = (props) => {
                   value={tarea}/>
                   {
                     modoEdicion 
-                    ? (<button className='btn btn-warning col-12' type='submit'>Edit</button>)
-                    : (<button className='btn btn-primary col-12' type='submit'>Add</button>)
+                    ? (<Button color='warning' startIcon={<EditIcon/>} variant='contained' className='col-12' type='submit'>Edit</Button>)
+                    : (<Button color='primary' startIcon={<AddIcon/>} variant='contained' className='col-12' type='submit'>Add</Button>)
                   }
                   
                 </form>

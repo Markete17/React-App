@@ -2,11 +2,9 @@ import React from 'react'
 import Login from './Login'
 import { useSelector,useDispatch } from 'react-redux'
 import { ThemeContext } from '../context/ThemeProvider'
-import { useNavigate } from 'react-router-dom'
 
 const Admin = (props) => {
 
-      const navigate = useNavigate()
       const user = useSelector(store => store.user.user)
       const {theme,changeColor} = React.useContext(ThemeContext)
 

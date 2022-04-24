@@ -3,7 +3,6 @@ import { ChatContext } from '../context/ChatProvider'
 import Login from './Login'
 import MessageChat from './MessageChat'
 
-
 const Chat = () => {
 
     const {user,messages} = React.useContext(ChatContext)

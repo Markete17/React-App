@@ -1,6 +1,8 @@
 import React from 'react'
 import { auth } from '../firebase';
 import {useNavigate } from "react-router-dom";
+import { Button } from '@mui/material';
+import SendIcon from '@mui/icons-material/Send';
 
 const Reset = (props) => {
 
@@ -49,9 +51,10 @@ const Reset = (props) => {
               <div className="form-outline form-white mb-1">
                 <input onChange={e=>setEmail(e.target.value)} value={email} type="email" id="typeEmailX" placeholder='Enter your email' className="form-control form-control-lg" />
                 <label className="form-label">Email</label>
-              </div>    
-              <button className="btn btn-outline-light btn-lg px-5 mx-2" type="submit">Reset</button>
-
+              </div> 
+              <div className='mt-4'>
+              <Button color='primary' variant='contained' size="large" startIcon={<SendIcon/>} disableElevation >Send</Button>
+              </div>
           </div>
         </div>
       </div>

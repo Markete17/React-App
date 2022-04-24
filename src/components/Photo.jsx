@@ -2,6 +2,8 @@ import { useParams } from 'react-router-dom'
 import { useFetch } from '../hooks/useFetch'
 import { Link } from 'react-router-dom'
 import NotFoundError from './NotFoundError'
+import { Button } from '@mui/material'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const Photo = () => {
 
@@ -16,7 +18,9 @@ const Photo = () => {
             <h5 className='card-text mt-2'>{data.title}</h5>
             </div>
         </div>
-        <Link to="/gallery" className='btn btn-primary'>Back</Link>
+        <div className='mt-3'>
+            <Link to="/gallery"><Button color='primary' variant='contained' startIcon={<ArrowBackIcon/>}>Back</Button></Link>
+        </div>
 
     </div>
   ) : !loading && <NotFoundError></NotFoundError>

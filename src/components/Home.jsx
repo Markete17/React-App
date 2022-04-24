@@ -3,6 +3,7 @@ import Login from './Login'
 import { useSelector,useDispatch } from 'react-redux'
 import {updateUserAction,updatePhotoUserAction} from '../redux/userDucks'
 import { ThemeContext } from '../context/ThemeProvider'
+import { Button } from '@mui/material'
 
 const Home = (props) => {
     
@@ -54,12 +55,13 @@ const Home = (props) => {
             <img src={user.photoURL} alt='Profile Image' width='100px' className='img-fluid'></img>
             <h5 className='card-title mt-3'>Name: {user.displayName}</h5>
             <p className='card-text'>Email: {user.email}</p>
-            <button className='btn btn-primary' onClick={() => activate()}>
+            <Button color='primary' variant='contained' disableElevation onClick={() => activate()}>
             {!activateForm ?
               'Edit Name' : 'Cancel Edit'
             }
-            </button>
+            </Button>
             <div className='custom-file'>
+              
               <input 
                 type='file' 
                 className='custom-file-input' 
@@ -97,7 +99,7 @@ const Home = (props) => {
                       <div className='input-group mb-3'>
                         <input type='text' className='form-control' onChange={e => setUserName(e.target.value)} value={username} placeholder='Enter your name'/>
                         <div className='input-group-append'>
-                          <button className='btn btn-outline-primary' type='button' onClick={() => updateForm()}>Edit</button>
+                          <Button color='primary' disableElevation variant='contained' onClick={() => updateForm()}>Edit</Button>
                         </div>
                       </div>
                     </div>

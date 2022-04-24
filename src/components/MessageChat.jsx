@@ -1,5 +1,7 @@
 import React from 'react'
 import { ChatContext } from '../context/ChatProvider'
+import { Button } from '@mui/material'
+import SendIcon from '@mui/icons-material/Send';
 
 const MessageChat = () => {
 
@@ -25,7 +27,7 @@ const MessageChat = () => {
             value={message}
             onChange={e=>setMessage(e.target.value)}/>
         <div className='input-group-append'>
-            <button className='btn btn-success'>Send</button>
+            <Button color='success' variant='contained' startIcon={<SendIcon/>} disableElevation >Send</Button>
         </div>
     </form>
   )
