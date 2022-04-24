@@ -1,13 +1,14 @@
 import React from 'react'
 import {auth, db} from '../firebase'
-import { withRouter } from 'react-router-dom/cjs/react-router-dom.min';
 import {useDispatch,useSelector} from 'react-redux'
 import {signInAction, signInWithGoogleUserAction} from '../redux/userDucks'
 import Home from './Home';
+import { useNavigate } from 'react-router-dom';
 
 
 const Login = (props) => {
   
+  const navigate = useNavigate()
   
   const [email,setEmail] = React.useState('');
   const [displayName,setDisplayName] = React.useState('');
@@ -65,7 +66,7 @@ const Login = (props) => {
       setPassword('')
       setError(null)
       setDisplayName('');
-      props.history.push('/');
+      navigate('/');
     } catch (error) {
       setError(error.message)
       setPassword('')
@@ -81,7 +82,7 @@ const Login = (props) => {
       setEmail('');
       setPassword('')
       setError(null)
-      props.history.push('/');
+      navigate('/');
     } catch (error) {
       setError(error.message)
       setPassword('')
@@ -91,7 +92,7 @@ const Login = (props) => {
   )
 
   const resetPassword = React.useCallback(async () =>{
-    props.history.push('/reset')
+    navigate('/reset')
   })
 
   return (user === null || user===undefined) ? (
@@ -174,4 +175,4 @@ const Login = (props) => {
   ) : <Home></Home>
 }
 
-export default withRouter(Login)
+export default Login

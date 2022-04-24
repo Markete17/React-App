@@ -1,15 +1,15 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { NavLink } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import { db} from '../firebase'
-import { withRouter } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import {logOutWithGoogle} from '../redux/userDucks'
+import {useNavigate } from "react-router-dom";
 
 const Navbar = (props) => {
 
     const dispatch = useDispatch()
-
+    const navigate = useNavigate()
 
     const getAdmin = async() => {
         if(props.user==null){
@@ -40,8 +40,7 @@ const Navbar = (props) => {
 
     const logout = () => {
             dispatch(logOutWithGoogle())
-            props.history.push('/')
-            window.reaload()
+            navigate('/')
     }
 
     React.useEffect(() => {
@@ -50,6 +49,7 @@ const Navbar = (props) => {
 
   return (
     <div className='navbar navbar-light bg-primary'>
+        {/*La diferencia entre Link y Navbar Link es que detecta la ruta en la que estamos y se sombrea el boton(añade la prop active de boostrap en el classname) */}
         
         <Link className='navbar-brand mx-3 h1 text-white' to="/">React App</Link>
         <div>
@@ -62,30 +62,36 @@ const Navbar = (props) => {
             <ul className="dropdown-menu">
                 <li className='dropdown-item text-center mt-1'>
                     {
-                        props.user!=null && <NavLink className="text-decoration-none font-weight-bold" to="/" activeClassName="selected">Home</NavLink>
+                        props.user!=null && <NavLink className="text-decoration-none font-weight-bold" to="/">Home</NavLink>
                     }
                 </li>
                 <li className='dropdown-item text-center mt-1'>
                     {
-                        props.user!=null && <NavLink className="text-decoration-none font-weight-bold" to="/tasks" activeClassName="selected">My Tasks</NavLink>
+                        props.user!=null && <NavLink className="text-decoration-none font-weight-bold" to="/tasks">My Tasks</NavLink>
                     }
                 </li>
 
                 <li className='dropdown-item text-center mt-1'>
                 {
-                        props.user!=null && <NavLink className="text-decoration-none font-weight-bold" to="/pokemons" activeClassName="selected">Pokemons</NavLink>
+                        props.user!=null && <NavLink className="text-decoration-none font-weight-bold" to="/pokemons">Pokemons</NavLink>
                     }
                 </li>
                 <li className='dropdown-item text-center mt-1'>
                     {
-                        props.user!=null && <NavLink className="text-decoration-none font-weight-bold" to="/chat" activeClassName="selected">Chat</NavLink>
+                        props.user!=null && <NavLink className="text-decoration-none font-weight-bold" to="/chat">Chat</NavLink>
+                    }
+                </li>
+
+                <li className='dropdown-item text-center mt-1'>
+                    {
+                        props.user!=null && <NavLink className="text-decoration-none font-weight-bold" to="/gallery">Gallery</NavLink>
                     }
                 </li>
                 
                 {isAdmin && <hr className="dropdown-divider"/>}
                 <li className='dropdown-item text-center mt-1'>
                     {
-                        (props.user!=null && isAdmin) && <NavLink className="text-decoration-none font-weight-bold" to="/admin" activeClassName="selected">Admin</NavLink>
+                        (props.user!=null && isAdmin) && <NavLink className="text-decoration-none font-weight-bold" to="/admin">Admin</NavLink>
                     }
                 </li>
                 
@@ -95,8 +101,8 @@ const Navbar = (props) => {
             }
                 {
                     props.user!=null 
-                    ? <NavLink onClick={() => logout()} className="btn btn-primary mx-2" to="/logout" activeClassName="selected">Log Out</NavLink>
-                    : <NavLink className="btn btn-primary mx-2 pe-auto" to="/" activeClassName="selected">Log In</NavLink>
+                    ? <button onClick={() => logout()} className='btn btn-primary mx-2'>Log Out</button>
+                    : <NavLink className="btn btn-primary mx-2 pe-auto" to="/">Log In</NavLink>
                 }
             </div>
         </div>
@@ -106,4 +112,4 @@ const Navbar = (props) => {
   )
 }
 
-export default withRouter(Navbar)
+export default Navbar

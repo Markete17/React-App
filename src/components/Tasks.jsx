@@ -1,8 +1,6 @@
 import React from 'react'
 import {db} from '../firebase';
-import { auth } from '../firebase';
 import Login from './Login';
-import { withRouter } from 'react-router-dom/cjs/react-router-dom.min';
 import moment from 'moment';
 import { useSelector,useDispatch } from 'react-redux'
 
@@ -194,4 +192,4 @@ const Tasks = (props) => {
     ) : <Login></Login>
 }
 
-export default withRouter(Tasks)
+export default Tasks

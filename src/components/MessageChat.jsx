@@ -9,7 +9,6 @@ const MessageChat = () => {
     const add = (e) => {
         e.preventDefault();
         if(!message.trim()){
-            console.log('vacio')
             return
         }
         addMessages(user.uid,message,user.name)

@@ -7,6 +7,7 @@ import generateStore from './redux/store';
 
 import ThemeProvider from './context/ThemeProvider';
 import ChatProvider from './context/ChatProvider';
+import { BrowserRouter } from 'react-router-dom';
 
 // 👇️ IMPORTANT: use correct ID of your root element
 // this is the ID of the div in your index.html file
@@ -23,7 +24,9 @@ root.render(
     <Provider store={store}> {/*Provider para usar REDUX en los componentes, tiene que rodear toda la App*/}
     <ChatProvider>
       <ThemeProvider>
-        <App />
+          <BrowserRouter> {/*React Router V6*/}
+          <App />
+          </BrowserRouter>
       </ThemeProvider>
       </ChatProvider>
     </Provider>

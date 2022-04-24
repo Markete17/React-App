@@ -43,6 +43,7 @@ const Home = (props) => {
 
   return user != null ?(
     <div className='mt-5 text-center'>
+      
         <div className='card'>
           <div style={
       {background: theme.background,

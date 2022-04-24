@@ -1,8 +1,10 @@
 import React from 'react'
 import { auth } from '../firebase';
-import { withRouter } from 'react-router-dom';
+import {useNavigate } from "react-router-dom";
 
 const Reset = (props) => {
+
+    const navigate = useNavigate()
 
     const [email,setEmail] = React.useState('');
     const [error,setError] = React.useState(null);
@@ -20,7 +22,7 @@ const Reset = (props) => {
     const reset = React.useCallback( async()=>{
         try {
             await auth.sendPasswordResetEmail(email)
-            props.history.push('/')
+            navigate('/')
         } catch (error) {
             setError(error)
         }
@@ -61,4 +63,4 @@ const Reset = (props) => {
   )
 }
 
-export default withRouter(Reset)
+export default Reset

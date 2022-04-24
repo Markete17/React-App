@@ -9,8 +9,12 @@ import Pokemons from './components/Pokemons';
 import Chat from './components/Chat';
 import Home from './components/Home';
 
-import {BrowserRouter as Router,Switch,Route,Redirect} from 'react-router-dom'
+import {Outlet,Route, Routes} from 'react-router-dom'
 import {auth} from './firebase'
+import NotFoundError from './components/NotFoundError';
+import Loading from './components/Loading';
+import Gallery from './components/Gallery';
+import Photo from './components/Photo';
 
 
 function App() {
@@ -33,7 +37,7 @@ function App() {
   },[])
 
   //Rutas protegidas - errores de momento
-  const PrivateRoute = ({component,path,...rest}) => {
+ /* const PrivateRoute = ({component,path,...rest}) => {
     if(localStorage.getItem('user')){
       const userStore = JSON.parse(localStorage.getItem('user'))
       if(userStore.uid === fireBaseUser.uid){
@@ -44,50 +48,38 @@ function App() {
     } else {
       return <Redirect to='/' {...rest}></Redirect>
     }
-  }
+  }*/
 
   return fireBaseUser !== false ? (
 
     <div className="container mt-5">
-      
-      <Router forceRefresh>
-          <Navbar user={fireBaseUser}></Navbar>
-        
+      <Navbar user={fireBaseUser}></Navbar>
         <div className='container'>
-          <Switch>
-              <Route path="/admin">
-              
-                <Admin></Admin>
-              </Route> 
-              {/*Tambien se puede poner asi
-              <Route path="/tasks" user={fireBaseUser} component={Tasks}/>
-              */}
-              <Route path="/tasks" user={fireBaseUser} component={Tasks}/>
-              <Route path="/reset" user={fireBaseUser} component={Reset}/>
-              {/*Se puede pasar el user por los props o por REDUX como en HOME y demas*/}
-              <Route path="/home">
-                  <Home></Home>
-                  
+        <Outlet></Outlet>{/*En index.js se define el Browser Router y Outlet sirve para que las rutas se pinten aqui */}
+          <Routes>
+              {/*Rutas anidadas*/}
+              <Route path="/">
+                <Route index element={<Login/>} forceRefresh></Route>
+                <Route path="admin" element={<Admin/>}></Route> 
+                {/*Tambien se puede poner asi
+                <Route path="/tasks" user={fireBaseUser} component={Tasks}/>
+                */}
+                <Route path="tasks" user={fireBaseUser} element={<Tasks/>}/>
+                <Route path="reset" user={fireBaseUser} element={<Reset/>}/>
+                {/*Se puede pasar el user por los props o por REDUX como en HOME y demas*/}
+                <Route path="home" element={<Home/>}></Route>
+                <Route path="pokemons" user={fireBaseUser} element={<Pokemons/>}/>
+                <Route path="chat" user={fireBaseUser} element={<Chat/>}/>
+                <Route path="gallery" user={fireBaseUser} element={<Gallery/>}/>
+                <Route path="gallery/:id" user={fireBaseUser} element={<Photo/>}/>
+                <Route path="*" user={fireBaseUser} element={<NotFoundError/>}/>
               </Route>
-              <Route path="/pokemons" user={fireBaseUser} component={Pokemons}/>
-              <Route path="/chat" user={fireBaseUser} component={Chat}/>
-              <Route path="/" exact>
-                  <Login></Login>
-              </Route>
-          </Switch>
+          </Routes>
         </div>
-
-      </Router>
       
 
     </div>
-  ) : <div className="d-flex justify-content-center">
-        <div className="spinner-border" role="status">
-          <span className="sr-only">.</span>
-        </div>
-        <br></br>
-        <p>Loading</p>
-    </div>
+  ) : <Loading></Loading>
 }
 
 export default App;
